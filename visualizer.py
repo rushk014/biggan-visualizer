@@ -24,7 +24,8 @@ def setup_parser():
     parser.add_argument("--smooth_factor", type=int, default=20)
     parser.add_argument("--batch_size", type=int, default=30)
     parser.add_argument("--output_file", default="")
-    parser.add_argument("--use_last", action="store_true", default=False)
+    parser.add_argument("--use_last_vectors", action="store_true", default=False)
+    parser.add_argument("--use_last_classes", action="store_true", default=False)
     parser.add_argument("--lyrics")
     return parser
 
@@ -58,7 +59,7 @@ if __name__ == '__main__':
     jitter = args.jitter
     batch_size = args.batch_size
     smooth_factor = int(args.smooth_factor * 512 / frame_length)
-    use_last = args.use_last
+    use_last_vectors = args.use_last_vectors
     truncation = args.truncation
     num_classes = args.num_classes
     if args.output_file:
@@ -80,11 +81,13 @@ if __name__ == '__main__':
         frame_lim = get_frame_lim(args.duration, frame_length, batch_size)
     else:
         frame_lim = get_frame_lim(len(y)/sr, frame_length, batch_size)
+    if args.use_last_classes:
+        cvs = np.load('saved_vectors/class_vectors.npy')
+        classes = list(np.where(cvs[0]>0)[0])
     if args.classes and args.lyrics:
         raise ValueError("Must use either semantic similarity on lyrics or chosen classes")
     elif args.classes:
         classes = args.classes
-        assert len(classes) == 12, "must select 12 unique classes"
     elif args.lyrics:
         classes = semantic_classes(args.lyrics, c_dict, num_classes=num_classes, device=device)
     else:
@@ -100,7 +103,7 @@ if __name__ == '__main__':
     model = BigGAN.from_pretrained(model_name)
 
     print('Generating vectors \n')
-    class_vectors, noise_vectors = generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes, use_last, truncation)    
+    class_vectors, noise_vectors = generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes, use_last_vectors, truncation)    
     noise_vectors = torch.Tensor(np.array(noise_vectors))      
     class_vectors = torch.Tensor(np.array(class_vectors))      
 
