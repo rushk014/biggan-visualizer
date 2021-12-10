@@ -1,0 +1,6 @@
+moviepy
+torch
+tqdm
+librosa
+numpy
+pytorch_pretrained_biggan
