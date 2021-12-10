@@ -18,7 +18,7 @@ def setup_parser():
     parser.add_argument("-ts", "--tempo_sensitivity", type=float, default=0.25, metavar="[0.05-0.8]", help="controls the sensitivity of the noise vector to changes in volume and tempo")
     parser.add_argument("--classes", nargs='+', type=int, help="manually specify [--num_classes] ImageNet classes")
     parser.add_argument("-n", "--num_classes", type=int, default=12, help="number of unique classes to use")
-    parser.add_argument("--jitter", type=float, default=0.5, help="controls jitter of the noise vector to reduce repitition")
+    parser.add_argument("--jitter", type=float, default=0.5, metavar="[0-1]", help="controls jitter of the noise vector to reduce repitition")
     parser.add_argument("--frame_length", type=int, default=512, metavar="i*2^6", help="number of audio frames to video frames in the output")
     parser.add_argument("--truncation", type=float, default=1, metavar="[0.1-1]", help="BigGAN truncation parameter controls complexity of structure within frames")
     parser.add_argument("--smooth_factor", type=int, default=20, metavar="[10-30]", help="controls interpolation between class vectors to smooth rapid flucations")
