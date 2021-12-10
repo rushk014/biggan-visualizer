@@ -17,8 +17,10 @@ def setup_parser():
     parser.add_argument("--pitch_sensitivity", type=int, default=220)
     parser.add_argument("--tempo_sensitivity", type=float, default=0.25)
     parser.add_argument("--classes", nargs='+', type=int)
+    parser.add_argument("--num_classes", type=int, default=12)
     parser.add_argument("--jitter", type=float, default=0.5)
     parser.add_argument("--frame_length", type=int, default=512)
+    parser.add_argument("--truncation", type=float, default=1)
     parser.add_argument("--smooth_factor", type=int, default=20)
     parser.add_argument("--batch_size", type=int, default=30)
     parser.add_argument("--output_file", default="")
@@ -57,7 +59,8 @@ if __name__ == '__main__':
     batch_size = args.batch_size
     smooth_factor = int(args.smooth_factor * 512 / frame_length)
     use_last = args.use_last
-    num_classes = 12 # --classes must use 12
+    truncation = args.truncation
+    num_classes = args.num_classes
     if args.output_file:
         outname = 'output/' + args.output_file
     else:
@@ -88,8 +91,6 @@ if __name__ == '__main__':
         classes = random_classes(num_classes=num_classes)
     
     # print class names
-    
-
     print('Chosen classes: \n')
     for cid, c in enumerate(classes):
         print(cid, c_dict[c])
@@ -99,7 +100,7 @@ if __name__ == '__main__':
     model = BigGAN.from_pretrained(model_name)
 
     print('Generating vectors \n')
-    class_vectors, noise_vectors = generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes=classes, preload=use_last)    
+    class_vectors, noise_vectors = generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes, use_last, truncation)    
     noise_vectors = torch.Tensor(np.array(noise_vectors))      
     class_vectors = torch.Tensor(np.array(class_vectors))      
 

@@ -60,8 +60,11 @@ def get_frame_lim(seconds, frame_length, batch_size):
 
 def default_cv(chroma, chromasort, classes):
     cv = np.zeros(CV_SIZE)
-    for p in chromasort[:len(classes)]:
-        cv[classes[p]] = chroma[p][np.min([np.where(pi>0)[0][0] for pi in chroma])]
+    for pi, p in enumerate(chromasort[:len(classes)]):
+        if len(classes) < 12:
+            cv[classes[pi]] = chroma[p][np.min([np.where(ch>0)[0][0] for ch in chroma])]
+        else:
+            cv[classes[p]] = chroma[p][np.min([np.where(ch>0)[0][0] for ch in chroma])]
     return cv
 
 def normalize_cv(cv):
@@ -69,9 +72,9 @@ def normalize_cv(cv):
     cv[cv == 0] = min_cv
     return (cv-min_cv)/np.ptp(cv)
 
-def new_update_dir(nv, update_dir, tempo_sensitivity):
-    update_dir[nv >= 2 - tempo_sensitivity] = -1
-    update_dir[nv < -2 + tempo_sensitivity] = 1
+def new_update_dir(nv, update_dir, tempo_sensitivity, truncation):
+    update_dir[nv >= 2*truncation - tempo_sensitivity] = -1
+    update_dir[nv < -2*truncation + tempo_sensitivity] = 1
     return update_dir
 
 def smooth(class_vectors,smooth_factor):
@@ -86,14 +89,14 @@ def smooth(class_vectors,smooth_factor):
             class_vectors_sm.append(cvc)
     return np.array(class_vectors_sm)
 
-def generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes=None, preload=False):
+def generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes, preload, truncation):
     if preload:
         return np.load('saved_vectors/class_vectors.npy'), np.load('saved_vectors/noise_vectors.npy')
     if classes is None:
         classes = random_classes()
     spec_mean, grad_mean = generate_power(y, sr)
     chroma, chromasort = generate_chroma(y, sr)
-    cv1, nv1 = default_cv(chroma, chromasort, classes), truncated_noise_sample()[0]
+    cv1, nv1 = default_cv(chroma, chromasort, classes), truncated_noise_sample(truncation=truncation)[0]
     cvs, nvs = [cv1], [nv1]
     update_dir = np.where(nv1 < 0, 1, -1)
     update_last = np.zeros(NV_SIZE)
@@ -115,7 +118,7 @@ def generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes=None, 
 
         nvs.append(nv)
         cvs.append(cv)
-        update_dir = new_update_dir(nv, update_dir, tempo_sensitivity)
+        update_dir = new_update_dir(nv, update_dir, tempo_sensitivity, truncation)
         update_last = update
     
     np.save('saved_vectors/class_vectors.npy', cvs)
