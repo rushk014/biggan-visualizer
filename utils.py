@@ -2,7 +2,7 @@ import librosa
 import numpy as np
 import random
 import re
-import tqdm
+from tqdm import tqdm
 from pytorch_pretrained_biggan import truncated_noise_sample
 from sentence_transformers import SentenceTransformer, util
 
@@ -32,7 +32,6 @@ def semantic_classes(lyrics, class_dict, num_classes=12):
     with open(lyrics) as lyrics_file:
         lines = lyrics_file.readlines()
         lines = [line.rstrip() for line in lines if not re.match('\[.*\]$', line.rstrip())]
-    print(lines)
     best_keys = set()
     for l in tqdm(lines):
         best_key, best_sim = 0, -1
