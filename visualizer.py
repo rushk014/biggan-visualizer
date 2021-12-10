@@ -6,8 +6,8 @@ import librosa
 from utils import generate_vectors, get_frame_lim, random_classes, semantic_classes, to_np
 import numpy as np
 from pytorch_pretrained_biggan import (BigGAN, convert_to_images)
-import ast
 import os
+import json
 
 def setup_parser():
     parser = argparse.ArgumentParser(description="Audio visualizer using BigGAN and semantic analysis", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -75,8 +75,8 @@ if __name__ == '__main__':
     print('Using device:', device, '\n')
 
     # load class names
-    with open('imagenet_labels.txt','r') as labels:
-        c_dict = ast.literal_eval(labels.read())
+    with open('imagenet-simple-labels.json') as f:
+        c_dict = json.load(f)
 
     if args.duration:
         frame_lim = get_frame_lim(args.duration, frame_length, batch_size)
