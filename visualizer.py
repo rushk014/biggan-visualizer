@@ -62,7 +62,7 @@ if __name__ == '__main__':
     if args.output_file:
         outname = 'output/' + args.output_file
     else:
-        outname = 'output/' + os.path.basename(args.song)
+        outname = 'output/' + os.path.basename(args.song).split('.')[0]
 
     print('Reading audio\n')
     y, sr = librosa.load(song)
