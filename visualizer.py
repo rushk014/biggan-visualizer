@@ -17,7 +17,6 @@ parser.add_argument("--duration", type=int)
 parser.add_argument("--pitch_sensitivity", type=int, default=220)
 parser.add_argument("--tempo_sensitivity", type=float, default=0.25)
 parser.add_argument("--classes", nargs='+', type=int)
-parser.add_argument("--num_classes", type=int, default=12)
 parser.add_argument("--jitter", type=float, default=0.5)
 parser.add_argument("--frame_length", type=int, default=512)
 parser.add_argument("--smooth_factor", type=int, default=20)
@@ -31,12 +30,12 @@ frame_length = args.frame_length
 pitch_sensitivity = (300-args.pitch_sensitivity) * 512 / frame_length
 tempo_sensitivity = args.tempo_sensitivity * frame_length / 512
 model_name='biggan-deep-' + args.resolution
-num_classes=args.num_classes
-jitter=args.jitter
+jitter = args.jitter
 batch_size = args.batch_size
 outname = args.output_file
 smooth_factor = int(args.smooth_factor * 512 / frame_length)
 preload = args.preload
+num_classes = 12 # --classes must use 12
 
 print('\nReading audio \n')
 y, sr = librosa.load(song)
@@ -55,8 +54,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if args.classes:
     classes = args.classes
-    if len(classes) not in [12,num_classes]:
-        raise ValueError("The number of classes entered in the --class argument must equal 12 or [num_classes] if specified")
+    assert len(classes) == 12, "must select 12 unique classes"
 else:
     classes = random_classes(num_classes=num_classes)
 
