@@ -44,7 +44,6 @@ def semantic_classes(lyrics, class_dict, num_classes=12, device='cpu'):
                 best_key, best_sim = key, cos_sim.item()
         
         best_keys.put((-best_sim, best_key))
-    assert len(best_keys) > num_classes, "too few lyrics to generate sufficient classes"
     # get num_classes best keys in PriorityQueue
     keys = []
     while len(keys) < num_classes:

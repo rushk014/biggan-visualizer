@@ -72,6 +72,7 @@ if __name__ == '__main__':
 
     #set device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print('Using device:', device, '\n')
 
     # load class names
     with open('imagenet_labels.txt','r') as labels:
