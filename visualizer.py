@@ -67,6 +67,9 @@ if __name__ == '__main__':
     print('Reading audio\n')
     y, sr = librosa.load(song)
 
+    #set device
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
     # load class names
     with open('imagenet_labels.txt','r') as labels:
         c_dict = ast.literal_eval(labels.read())
@@ -81,7 +84,7 @@ if __name__ == '__main__':
         classes = args.classes
         assert len(classes) == 12, "must select 12 unique classes"
     elif args.lyrics:
-        classes = semantic_classes(args.lyrics, c_dict, num_classes=num_classes)
+        classes = semantic_classes(args.lyrics, c_dict, num_classes=num_classes, device=device)
     else:
         classes = random_classes(num_classes=num_classes)
     
@@ -95,9 +98,6 @@ if __name__ == '__main__':
     # Load pre-trained model
     print('Loading BigGAN \n')
     model = BigGAN.from_pretrained(model_name)
-
-    #set device
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     print('Generating vectors \n')
     class_vectors, noise_vectors = generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes=classes, preload=use_last)    
