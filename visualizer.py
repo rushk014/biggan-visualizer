@@ -3,7 +3,7 @@ import moviepy.editor as mpy
 import torch
 from tqdm import tqdm
 import librosa
-# from utils import generate_vectors, get_frame_lim, random_classes, semantic_classes, to_np
+from utils import generate_vectors, get_frame_lim, random_classes, semantic_classes, to_np
 import numpy as np
 from pytorch_pretrained_biggan import (BigGAN, convert_to_images)
 import ast
