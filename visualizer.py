@@ -72,14 +72,14 @@ noise_vectors = torch.Tensor(np.array(noise_vectors))
 class_vectors = torch.Tensor(np.array(class_vectors))      
 
 
-#Generate frames in batches of batch_size
+# Generate frames in batches of batch_size
 
 print('\n\nGenerating frames \n')
 
-#send to CUDA if running on GPU
-model=model.to(device)
-noise_vectors=noise_vectors.to(device)
-class_vectors=class_vectors.to(device)
+# send to CUDA if running on GPU
+model = model.to(device)
+noise_vectors = noise_vectors.to(device)
+class_vectors = class_vectors.to(device)
 
 
 frames = []
@@ -95,7 +95,7 @@ for i in tqdm(range(frame_lim)):
     with torch.no_grad():
         output = model(noise_vector, class_vector, 1)
 
-    output_images = convert_to_images(output)
+    output_images = convert_to_images(output.cpu())
     frames.extend(np.array([to_np(i) for i in output_images]))
     torch.cuda.empty_cache()
 
