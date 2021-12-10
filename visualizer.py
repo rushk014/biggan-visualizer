@@ -3,30 +3,30 @@ import moviepy.editor as mpy
 import torch
 from tqdm import tqdm
 import librosa
-from utils import generate_vectors, get_frame_lim, random_classes, semantic_classes, to_np
+# from utils import generate_vectors, get_frame_lim, random_classes, semantic_classes, to_np
 import numpy as np
 from pytorch_pretrained_biggan import (BigGAN, convert_to_images)
 import ast
 import os
 
 def setup_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--song", required=True, default="input/romantic.mp3", help="path to input audio file")
+    parser = argparse.ArgumentParser(description="Audio visualizer using BigGAN and semantic analysis", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-s", "--song", required=True, default="input/romantic.mp3", help="path to input audio file")
     parser.add_argument("--resolution", default='512', choices=['128', '256', '512'], help="output video resolution")
-    parser.add_argument("--duration", type=int, help="output video duration")
-    parser.add_argument("--pitch_sensitivity", type=int, default=220, metavar="[200-295]", help="controls the sensitivity of the class vector to changes in pitch")
-    parser.add_argument("--tempo_sensitivity", type=float, default=0.25, metavar="[0.05-0.8]", help="controls the sensitivity of the noise vector to changes in volume and tempo")
+    parser.add_argument("-d", "--duration", type=int, help="output video duration")
+    parser.add_argument("-ps", "--pitch_sensitivity", type=int, default=220, metavar="[200-295]", help="controls the sensitivity of the class vector to changes in pitch")
+    parser.add_argument("-ts", "--tempo_sensitivity", type=float, default=0.25, metavar="[0.05-0.8]", help="controls the sensitivity of the noise vector to changes in volume and tempo")
     parser.add_argument("--classes", nargs='+', type=int, help="manually specify [--num_classes] ImageNet classes")
-    parser.add_argument("--num_classes", type=int, default=12, help="number of unique classes to use")
+    parser.add_argument("-n", "--num_classes", type=int, default=12, help="number of unique classes to use")
     parser.add_argument("--jitter", type=float, default=0.5, help="controls jitter of the noise vector to reduce repitition")
     parser.add_argument("--frame_length", type=int, default=512, metavar="i*2^6", help="number of audio frames to video frames in the output")
     parser.add_argument("--truncation", type=float, default=1, metavar="[0.1-1]", help="BigGAN truncation parameter controls complexity of structure within frames")
     parser.add_argument("--smooth_factor", type=int, default=20, metavar="[10-30]", help="controls interpolation between class vectors to smooth rapid flucations")
     parser.add_argument("--batch_size", type=int, default=30, help="BigGAN batch_size")
-    parser.add_argument("--output_file", default="", help="output file name - stored in output/")
+    parser.add_argument("-o", "--output_file", default="", help="name of output file stored in output/, defaults to [--song] path base_name")
     parser.add_argument("--use_last_vectors", action="store_true", default=False, help="set flag to use previous saved class/noise vectors")
     parser.add_argument("--use_last_classes", action="store_true", default=False, help="set flag to use previous classes")
-    parser.add_argument("--lyrics", help="path to lyrics file; setting [--lyrics LYRICS] computes classes by semantic similarity under BERT encodings")
+    parser.add_argument("-l", "--lyrics", help="path to lyrics file; setting [--lyrics LYRICS] computes classes by semantic similarity under BERT encodings")
     return parser
 
 
