@@ -4,3 +4,4 @@ tqdm
 librosa
 numpy
 pytorch_pretrained_biggan
+sentence-transformers

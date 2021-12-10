@@ -1,7 +1,10 @@
 import librosa
 import numpy as np
 import random
+import re
+import tqdm
 from pytorch_pretrained_biggan import truncated_noise_sample
+from sentence_transformers import SentenceTransformer, util
 
 CV_SIZE = 1000
 NV_SIZE = 128
@@ -23,6 +26,24 @@ def random_classes(num_classes=12):
     classes = list(range(1000))
     random.shuffle(classes)
     return classes[:num_classes]
+
+def semantic_classes(lyrics, class_dict, num_classes=12):
+    transform = SentenceTransformer('all-mpnet-base-v2')
+    with open(lyrics) as lyrics_file:
+        lines = lyrics_file.readlines()
+        lines = [line.rstrip() for line in lines if not re.match('\[.*\]$', line.rstrip())]
+    best_keys = set()
+    for l in tqdm(lines):
+        best_key, best_sim = 0, -1
+        for key in class_dict:
+            class_emb = transform.encode(class_dict[key], convert_to_tensor=True)
+            l_emb = transform.encode(l, convert_to_tensor=True)
+            cos_sim = util.pytorch_cos_sim(class_emb, l_emb)
+            if cos_sim.item() > best_sim:
+                best_key, best_sim = key, cos_sim.item()
+        best_keys.add(best_key)
+    assert len(best_keys) > num_classes, "too few lyrics to generate sufficient classes"
+    return random.sample(best_keys, num_classes)
 
 def get_sensitivity(jitter=0.5):
     return np.random.choice([1, 1-jitter], size=NV_SIZE)

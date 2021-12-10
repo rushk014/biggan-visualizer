@@ -4,10 +4,9 @@ import torch
 from torch.functional import cdist
 from tqdm import tqdm
 import librosa
-from utils import generate_vectors, get_frame_lim, random_classes, to_np
+from utils import generate_vectors, get_frame_lim, random_classes, semantic_classes, to_np
 import numpy as np
 from pytorch_pretrained_biggan import (BigGAN, convert_to_images)
-from urllib.request import urlopen
 import ast
 import os
 
@@ -24,7 +23,8 @@ def setup_parser():
     parser.add_argument("--smooth_factor", type=int, default=20)
     parser.add_argument("--batch_size", type=int, default=30)
     parser.add_argument("--output_file", default="")
-    parser.add_argument("--preload", action="store_true", default=False)
+    parser.add_argument("--use_last", action="store_true", default=False)
+    parser.add_argument("--lyrics")
     return parser
 
 
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     jitter = args.jitter
     batch_size = args.batch_size
     smooth_factor = int(args.smooth_factor * 512 / frame_length)
-    preload = args.preload
+    use_last = args.use_last
     num_classes = 12 # --classes must use 12
     if args.output_file:
         outname = 'output/' + args.output_file
@@ -67,19 +67,26 @@ if __name__ == '__main__':
     print('Reading audio\n')
     y, sr = librosa.load(song)
 
+    # load class names
+    with open('imagenet_labels.txt','r') as labels:
+        c_dict = ast.literal_eval(labels.read())
+
     if args.duration:
         frame_lim = get_frame_lim(args.duration, frame_length, batch_size)
     else:
         frame_lim = get_frame_lim(len(y)/sr, frame_length, batch_size)
-    if args.classes:
+    if args.classes and args.lyrics:
+        raise ValueError("Must use either semantic similarity on lyrics or chosen classes")
+    elif args.classes:
         classes = args.classes
         assert len(classes) == 12, "must select 12 unique classes"
+    elif args.lyrics:
+        classes = semantic_classes(args.lyrics, c_dict, num_classes=num_classes)
     else:
         classes = random_classes(num_classes=num_classes)
     
     # print class names
-    with open('imagenet_labels.txt','r') as labels:
-        c_dict = ast.literal_eval(labels.read())
+    
 
     print('Chosen classes: \n')
     for cid, c in enumerate(classes):
@@ -93,7 +100,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     print('Generating vectors \n')
-    class_vectors, noise_vectors = generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes=classes, preload=False)    
+    class_vectors, noise_vectors = generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes=classes, preload=use_last)    
     noise_vectors = torch.Tensor(np.array(noise_vectors))      
     class_vectors = torch.Tensor(np.array(class_vectors))      
 
