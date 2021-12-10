@@ -4,7 +4,7 @@ BigGAN Audio Visualizer
 
 # Description
 
-Visualizer using audio and semantic analysis to explore BigGAN (Brock et al., 2018) latent space.
+This visualizer explores [BigGAN (Brock et al., 2018)](https://arxiv.org/abs/1809.11096) latent space by using pitch/tempo of an audio file to generate and interpolate between noise/class vector inputs to the model. Classes are chosen manually or optionally using semantic similarity on BERT encodings of a lyrics corpus.
 
 # Usage:
 
