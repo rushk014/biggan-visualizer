@@ -89,6 +89,7 @@ if __name__ == '__main__':
         raise ValueError("Must use either semantic similarity on lyrics or chosen classes")
     elif args.classes:
         classes = args.classes
+        assert len(classes) == num_classes, "number of classes must match [num_classes]"
     elif args.lyrics:
         classes = semantic_classes(args.lyrics, c_dict, num_classes=num_classes, device=device)
     else:
