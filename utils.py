@@ -27,6 +27,9 @@ def random_classes(num_classes=12):
 def get_sensitivity(jitter=0.5):
     return np.random.choice([1, 1-jitter], size=NV_SIZE)
 
+def get_frame_lim(seconds, frame_length, batch_size):
+    return int(np.floor(seconds*22050/frame_length/batch_size))
+
 def default_cv(chroma, chromasort, classes):
     cv = np.zeros(CV_SIZE)
     for p in chromasort[:len(classes)]:
