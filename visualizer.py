@@ -1,7 +1,6 @@
 import argparse
 import moviepy.editor as mpy
 import torch
-from torch.functional import cdist
 from tqdm import tqdm
 import librosa
 from utils import generate_vectors, get_frame_lim, random_classes, semantic_classes, to_np
@@ -64,7 +63,6 @@ if __name__ == '__main__':
     else:
         outname = 'output/' + os.path.basename(args.song).split('.')[0] + '.mp4'
 
-    print(outname)
     print('Reading audio\n')
     y, sr = librosa.load(song)
 
