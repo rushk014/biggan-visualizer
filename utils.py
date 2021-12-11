@@ -37,7 +37,10 @@ def semantic_classes(lyrics, class_dict, num_classes=12, device='cpu'):
     for l in tqdm(lines):
         best_key, best_sim = 0, -1
         for key in class_dict:
-            class_emb = transform.encode(class_dict[key], convert_to_tensor=True)
+            try:
+                class_emb = transform.encode(class_dict[key], convert_to_tensor=True)
+            except:
+                print(key)
             l_emb = transform.encode(l, convert_to_tensor=True)
             cos_sim = util.pytorch_cos_sim(class_emb, l_emb)
             if cos_sim.item() > best_sim:
