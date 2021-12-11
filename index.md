@@ -45,12 +45,21 @@ In the above example, semantic similarity between the lyrics `dough` and `chicke
 ## Examples
 
 - Run DMT - *Romantic*
+
 [![romantic](https://res.cloudinary.com/marcomontalbano/image/upload/v1639185857/video_to_markdown/images/youtube--8JY0UdOaHfs-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/8JY0UdOaHfs "romantic")
+
 - Moondog - *High on a Rocky Ledge*
+
 [![highonarockyledge](https://res.cloudinary.com/marcomontalbano/image/upload/v1639193645/video_to_markdown/images/youtube--gxf-4iyurvE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/gxf-4iyurvE "highonarockyledge")
 
 - Knxwledge - *itkanbe[sonic]*
+
 [![itkanbesonic](https://res.cloudinary.com/marcomontalbano/image/upload/v1639193112/video_to_markdown/images/youtube--badjh3FQuUA-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/badjh3FQuUA "itkanbesonic")
 
 - Sufjan Stevens - *Death with Dignity*
+
 [![death_with_dignity](https://res.cloudinary.com/marcomontalbano/image/upload/v1639193761/video_to_markdown/images/youtube--30RK_HeV3Is-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://www.youtube.com/watch?v=30RK_HeV3Is "death_with_dignity")
+
+## Making Your Own
+
+Use the provided [Google Colab notebook](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/deep_music_visualizer.ipynb) to generate your own Deep Music Videos!

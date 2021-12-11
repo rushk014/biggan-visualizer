@@ -1,240 +1,248 @@
 
     <html>
-        <head>
-          <title>BigGAN-Visualizer</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-        </head>
-        <body>
-          <div id='content'>
-      <h1 id="biggan-audio-visualizer">BigGAN Audio Visualizer</h1>
-  <h2 id="inspiration">Inspiration</h2>
-  <p>For my final project, I wanted to explore the intersection of audio and image processing. After doing some research, I came across <a href="https://youtu.be/A55NzPmB5PE?t=96">these</a> videos exploring the latent space of <a href="https://arxiv.org/abs/1809.11096">BigGAN (Brock et al., 2018)</a>. BigGAN differs from traditional GAN in that is it truly <em>big</em>, containing over 300 million parameters. As a result, interpolating across the latent image space contains a lot of rich, complex structure. My final project uses audio processing (as well as NLP) to control the interpolation within this latent space, and is deeply inspired by the Matt Siegelman's approach <a href="https://towardsdatascience.com/the-deep-music-visualizer-using-sound-to-explore-the-latent-space-of-biggan-198cd37dac9a">here</a>. Using this technique, we can produce trippy synthetic music videos as seen below:</p>
-  <p><a href="https://youtu.be/8JY0UdOaHfs" title="biggan-visualizer-example"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639185857/video_to_markdown/images/youtube--8JY0UdOaHfs-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="biggan-visualizer-example" /></a></p>
-  <h2 id="audio-processing">Audio Processing</h2>
-  <p>The BigGAN architectures takes two vectors of input:</p>
-  <ol>
-  <li>a class vector of shape (1000,) representing the weights corresponding to <a href="https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a">1000 ImageNet classes</a></li>
-  <li>a noise vector of shape (128,) with weights {$-2 \leq 2$}</li>
-  </ol>
-  <p>In order to process our audio into a sequence of these vectors, we first compute a chromagram and spectrogram of our input file. </p>
-  <ul>
-  <li>We filter the chromagram to find the highest power pitch class for each frame, each of which is associated with some ImageNet <code>cid</code>. We then construct the class vectors using random directions weighted by the respective <code>cid</code> for each frame.</li>
-  <li>We use the spectrogram mean gradient and power at each frame to compute the noise vectors, applying appropriate jitter and smoothing to both vectors to ensure a somewhat random walk across the latent space.</li>
-  </ul>
-  <h2 id="frame-generation">Frame Generation</h2>
-  <p>Once our noise and class vectors are defined, frame generation is as simple as piping our vectors, alongside a tunable truncation parameter, through the pretrained BigGAN. </p>
-  <p>Given the size of BigGAN, the computational intensity of this operation is significant. On my local machine, generating a minute worth of frames at <code>512x512</code> resolution takes ~7 hours. To produce the examples below, I utilized cloud GPU providers to greatly reduce runtime.</p>
-  <h2 id="hyperparameters">Hyperparameters</h2>
-  <p>There are a number of hyperparameters responsible for controlling the output video, they are:</p>
-  <ul>
-  <li><code>pitch sensitivity</code></li>
-  <li><code>tempo sensitivity</code></li>
-  <li><code>jitter</code></li>
-  <li><code>truncation</code></li>
-  <li><code>smooth factor</code></li>
-  </ul>
-  <p><code>Pitch sensitivity</code> and <code>tempo sensitivity</code> control the rate of change of the class/noise vectors respectively, while <code>jitter</code> controls the magnitude of update to the noise vectors in each frame. <code>Truncation</code> controls the variability of output images, while the <code>smooth factor</code> controls the smoothness of interpolation between the class vectors.</p>
-  <h2 id="class-generation">Class Generation</h2>
-  <p>In order to implement a smarter choice of classes, my idea was to use a similarity metric between encodings of the lyrics corpus and each ImageNet class. Following the framework of this <a href="https://arxiv.org/abs/1908.10084">paper</a>, I choose a Siamese BERT network to encode the sentences, and compared semantic similarity using a cosine-similarity metric. I then select the most similar <code>[num_classes]</code> unique classes to use for frame generation.</p>
-  <p><a href="https://youtu.be/badjh3FQuUA" title="itkanbesonic"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639193112/video_to_markdown/images/youtube--badjh3FQuUA-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="itkanbesonic" /></a></p>
-  <p>In the above example, semantic similarity between the lyrics <code>dough</code> and <code>chicken chili</code> causes the algorithm to select several ImageNet classes associated with food. This is a failure to account for the contextual meaning of the text. An interesting future development would be to implement sentiment analysis, alongside other contextual NLP techniques, to further account for subjective differences.</p>
-  <h2 id="examples">Examples</h2>
-  <ul>
-  <li><p>Run DMT - <em>Romantic</em><br />
-  <a href="https://youtu.be/8JY0UdOaHfs" title="romantic"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639185857/video_to_markdown/images/youtube--8JY0UdOaHfs-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="romantic" /></a></p></li>
-  <li><p>Moondog - <em>High on a Rocky Ledge</em><br />
-  <a href="https://youtu.be/gxf-4iyurvE" title="highonarockyledge"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639193645/video_to_markdown/images/youtube--gxf-4iyurvE-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="highonarockyledge" /></a></p></li>
-  <li><p>Knxwledge - <em>itkanbe[sonic]</em><br />
-  <a href="https://youtu.be/badjh3FQuUA" title="itkanbesonic"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639193112/video_to_markdown/images/youtube--badjh3FQuUA-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="itkanbesonic" /></a></p></li>
-  <li><p>Sufjan Stevens - <em>Death with Dignity</em><br />
-  <a href="https://www.youtube.com/watch?v=30RK_HeV3Is" title="death_with_dignity"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639193761/video_to_markdown/images/youtube--30RK_HeV3Is-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="death_with_dignity" /></a></p></li>
-  </ul>
-  
-          </div>
-          <style type='text/css'>body {
-    font: 400 16px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #111;
-    background-color: #fdfdfd;
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-feature-settings: "kern" 1;
-    -moz-font-feature-settings: "kern" 1;
-    -o-font-feature-settings: "kern" 1;
-    font-feature-settings: "kern" 1;
-    font-kerning: normal;
-    padding: 30px;
+      <head>
+        <title>BigGAN-Visualizer</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+      </head>
+      <body>
+        <div id='content'>
+    <h1 id="biggan-audio-visualizer">BigGAN Audio Visualizer</h1>
+<h2 id="inspiration">Inspiration</h2>
+<p>For my final project, I wanted to explore the intersection of audio and image processing. After doing some research, I came across <a href="https://youtu.be/A55NzPmB5PE?t=96">these</a> videos exploring the latent space of <a href="https://arxiv.org/abs/1809.11096">BigGAN (Brock et al., 2018)</a>. BigGAN differs from traditional GAN in that is it truly <em>big</em>, containing over 300 million parameters. As a result, interpolating across the latent image space contains a lot of rich, complex structure. My final project uses audio processing (as well as NLP) to control the interpolation within this latent space, and is deeply inspired by the Matt Siegelman's approach <a href="https://towardsdatascience.com/the-deep-music-visualizer-using-sound-to-explore-the-latent-space-of-biggan-198cd37dac9a">here</a>. Using this technique, we can produce trippy synthetic music videos as seen below:</p>
+<p><a href="https://youtu.be/8JY0UdOaHfs" title="biggan-visualizer-example"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639185857/video_to_markdown/images/youtube--8JY0UdOaHfs-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="biggan-visualizer-example" /></a></p>
+<h2 id="audio-processing">Audio Processing</h2>
+<p>The BigGAN architectures takes two vectors of input:</p>
+<ol>
+<li>a class vector of shape (1000,) representing the weights corresponding to <a href="https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a">1000 ImageNet classes</a></li>
+<li>a noise vector of shape (128,) with weights {$-2 \leq 2$}</li>
+</ol>
+<p>In order to process our audio into a sequence of these vectors, we first compute a chromagram and spectrogram of our input file. </p>
+<ul>
+<li>We filter the chromagram to find the highest power pitch class for each frame, each of which is associated with some ImageNet <code>cid</code>. We then construct the class vectors using random directions weighted by the respective <code>cid</code> for each frame.</li>
+<li>We use the spectrogram mean gradient and power at each frame to compute the noise vectors, applying appropriate jitter and smoothing to both vectors to ensure a somewhat random walk across the latent space.</li>
+</ul>
+<h2 id="frame-generation">Frame Generation</h2>
+<p>Once our noise and class vectors are defined, frame generation is as simple as piping our vectors, alongside a tunable truncation parameter, through the pretrained BigGAN. </p>
+<p>Given the size of BigGAN, the computational intensity of this operation is significant. On my local machine, generating a minute worth of frames at <code>512x512</code> resolution takes ~7 hours. To produce the examples below, I utilized cloud GPU providers to greatly reduce runtime.</p>
+<h2 id="hyperparameters">Hyperparameters</h2>
+<p>There are a number of hyperparameters responsible for controlling the output video, they are:</p>
+<ul>
+<li><code>pitch sensitivity</code></li>
+<li><code>tempo sensitivity</code></li>
+<li><code>jitter</code></li>
+<li><code>truncation</code></li>
+<li><code>smooth factor</code></li>
+</ul>
+<p><code>Pitch sensitivity</code> and <code>tempo sensitivity</code> control the rate of change of the class/noise vectors respectively, while <code>jitter</code> controls the magnitude of update to the noise vectors in each frame. <code>Truncation</code> controls the variability of output images, while the <code>smooth factor</code> controls the smoothness of interpolation between the class vectors.</p>
+<h2 id="class-generation">Class Generation</h2>
+<p>In order to implement a smarter choice of classes, my idea was to use a similarity metric between encodings of the lyrics corpus and each ImageNet class. Following the framework of this <a href="https://arxiv.org/abs/1908.10084">paper</a>, I choose a Siamese BERT network to encode the sentences, and compared semantic similarity using a cosine-similarity metric. I then select the most similar <code>[num_classes]</code> unique classes to use for frame generation.</p>
+<p><a href="https://youtu.be/badjh3FQuUA" title="itkanbesonic"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639193112/video_to_markdown/images/youtube--badjh3FQuUA-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="itkanbesonic" /></a></p>
+<p>In the above example, semantic similarity between the lyrics <code>dough</code> and <code>chicken chili</code> causes the algorithm to select several ImageNet classes associated with food. This is a failure to account for the contextual meaning of the text. An interesting future development would be to implement sentiment analysis, alongside other contextual NLP techniques, to further account for subjective differences.</p>
+<h2 id="examples">Examples</h2>
+<ul>
+<li>Run DMT - <em>Romantic</em></li>
+</ul>
+<p><a href="https://youtu.be/8JY0UdOaHfs" title="romantic"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639185857/video_to_markdown/images/youtube--8JY0UdOaHfs-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="romantic" /></a></p>
+<ul>
+<li>Moondog - <em>High on a Rocky Ledge</em></li>
+</ul>
+<p><a href="https://youtu.be/gxf-4iyurvE" title="highonarockyledge"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639193645/video_to_markdown/images/youtube--gxf-4iyurvE-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="highonarockyledge" /></a></p>
+<ul>
+<li>Knxwledge - <em>itkanbe[sonic]</em></li>
+</ul>
+<p><a href="https://youtu.be/badjh3FQuUA" title="itkanbesonic"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639193112/video_to_markdown/images/youtube--badjh3FQuUA-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="itkanbesonic" /></a></p>
+<ul>
+<li>Sufjan Stevens - <em>Death with Dignity</em></li>
+</ul>
+<p><a href="https://www.youtube.com/watch?v=30RK_HeV3Is" title="death_with_dignity"><img src="https://res.cloudinary.com/marcomontalbano/image/upload/v1639193761/video_to_markdown/images/youtube--30RK_HeV3Is-c05b58ac6eb4c4700831b2b3070cd403.jpg" alt="death_with_dignity" /></a></p>
+<h2 id="making-your-own">Making Your Own</h2>
+<p>Use the provided <a href="https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/deep_music_visualizer.ipynb">Google Colab notebook</a> to generate your own Deep Music Videos!</p>
+
+        </div>
+        <style type='text/css'>body {
+  font: 400 16px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #111;
+  background-color: #fdfdfd;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-feature-settings: "kern" 1;
+  -moz-font-feature-settings: "kern" 1;
+  -o-font-feature-settings: "kern" 1;
+  font-feature-settings: "kern" 1;
+  font-kerning: normal;
+  padding: 30px;
+}
+
+@media only screen and (max-width: 600px) {
+  body {
+    padding: 5px;
   }
-  
-  @media only screen and (max-width: 600px) {
-    body {
-      padding: 5px;
-    }
-  
-    body > #content {
-      padding: 0px 20px 20px 20px !important;
-    }
-  }
-  
+
   body > #content {
-    margin: 0px;
-    max-width: 900px;
-    border: 1px solid #e1e4e8;
-    padding: 10px 40px;
-    padding-bottom: 20px;
-    border-radius: 2px;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 0px 20px 20px 20px !important;
   }
-  
-  hr {
-    color: #bbb;
-    background-color: #bbb;
-    height: 1px;
-    flex: 0 1 auto;
-    margin: 1em 0;
-    padding: 0;
-    border: none;
-  }
-  
-  /**
-   * Links
-   */
-  a {
-    color: #0366d6;
-    text-decoration: none; }
-    a:visited {
-      color: #0366d6; }
-    a:hover {
-      color: #0366d6;
-      text-decoration: underline; }
-  
-  pre {
-    background-color: #f6f8fa;
-    border-radius: 3px;
-    font-size: 85%;
-    line-height: 1.45;
-    overflow: auto;
-    padding: 16px;
-  }
-  
-  /**
-    * Code blocks
-    */
-  
-  code {
-    background-color: rgba(27,31,35,.05);
-    border-radius: 3px;
-    font-size: 85%;
-    margin: 0;
-    word-wrap: break-word;
-    padding: .2em .4em;
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
-  }
-  
-  pre > code {
-    background-color: transparent;
-    border: 0;
-    display: inline;
-    line-height: inherit;
-    margin: 0;
-    overflow: visible;
-    padding: 0;
-    word-wrap: normal;
-    font-size: 100%;
-  }
-  
-  
-  /**
-   * Blockquotes
-   */
-  blockquote {
-    margin-left: 30px;
-    margin-top: 0px;
-    margin-bottom: 16px;
-    border-left-width: 3px;
-    padding: 0 1em;
-    color: #828282;
-    border-left: 4px solid #e8e8e8;
-    padding-left: 15px;
-    font-size: 18px;
-    letter-spacing: -1px;
-    font-style: italic;
-  }
-  blockquote * {
-    font-style: normal !important;
-    letter-spacing: 0;
-    color: #6a737d !important;
-  }
-  
-  /**
-   * Tables
-   */
-  table {
-    border-spacing: 2px;
-    display: block;
-    font-size: 14px;
-    overflow: auto;
-    width: 100%;
-    margin-bottom: 16px;
-    border-spacing: 0;
-    border-collapse: collapse;
-  }
-  
-  td {
-    padding: 6px 13px;
-    border: 1px solid #dfe2e5;
-  }
-  
-  th {
-    font-weight: 600;
-    padding: 6px 13px;
-    border: 1px solid #dfe2e5;
-  }
-  
-  tr {
-    background-color: #fff;
-    border-top: 1px solid #c6cbd1;
-  }
-  
-  table tr:nth-child(2n) {
-    background-color: #f6f8fa;
-  }
-  
-  /**
-   * Others
-   */
-  
-  img {
-    max-width: 100%;
-  }
-  
-  p {
-    line-height: 24px;
-    font-weight: 400;
-    font-size: 16px;
-    color: #24292e; }
-  
-  ul {
-    margin-top: 0; }
-  
-  li {
-    color: #24292e;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 1.5; }
-  
-  li + li {
-    margin-top: 0.25em; }
-  
-  * {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    color: #24292e; }
-  
+}
+
+body > #content {
+  margin: 0px;
+  max-width: 900px;
+  border: 1px solid #e1e4e8;
+  padding: 10px 40px;
+  padding-bottom: 20px;
+  border-radius: 2px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+hr {
+  color: #bbb;
+  background-color: #bbb;
+  height: 1px;
+  flex: 0 1 auto;
+  margin: 1em 0;
+  padding: 0;
+  border: none;
+}
+
+/**
+ * Links
+ */
+a {
+  color: #0366d6;
+  text-decoration: none; }
   a:visited {
     color: #0366d6; }
-  
-  h1, h2, h3 {
-    border-bottom: 1px solid #eaecef;
-    color: #111;
-    /* Darker */ }</style>
-        </body>
-      </html>
+  a:hover {
+    color: #0366d6;
+    text-decoration: underline; }
+
+pre {
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  font-size: 85%;
+  line-height: 1.45;
+  overflow: auto;
+  padding: 16px;
+}
+
+/**
+  * Code blocks
+  */
+
+code {
+  background-color: rgba(27,31,35,.05);
+  border-radius: 3px;
+  font-size: 85%;
+  margin: 0;
+  word-wrap: break-word;
+  padding: .2em .4em;
+  font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+}
+
+pre > code {
+  background-color: transparent;
+  border: 0;
+  display: inline;
+  line-height: inherit;
+  margin: 0;
+  overflow: visible;
+  padding: 0;
+  word-wrap: normal;
+  font-size: 100%;
+}
+
+
+/**
+ * Blockquotes
+ */
+blockquote {
+  margin-left: 30px;
+  margin-top: 0px;
+  margin-bottom: 16px;
+  border-left-width: 3px;
+  padding: 0 1em;
+  color: #828282;
+  border-left: 4px solid #e8e8e8;
+  padding-left: 15px;
+  font-size: 18px;
+  letter-spacing: -1px;
+  font-style: italic;
+}
+blockquote * {
+  font-style: normal !important;
+  letter-spacing: 0;
+  color: #6a737d !important;
+}
+
+/**
+ * Tables
+ */
+table {
+  border-spacing: 2px;
+  display: block;
+  font-size: 14px;
+  overflow: auto;
+  width: 100%;
+  margin-bottom: 16px;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+
+th {
+  font-weight: 600;
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+
+tr {
+  background-color: #fff;
+  border-top: 1px solid #c6cbd1;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+
+/**
+ * Others
+ */
+
+img {
+  max-width: 100%;
+}
+
+p {
+  line-height: 24px;
+  font-weight: 400;
+  font-size: 16px;
+  color: #24292e; }
+
+ul {
+  margin-top: 0; }
+
+li {
+  color: #24292e;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5; }
+
+li + li {
+  margin-top: 0.25em; }
+
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color: #24292e; }
+
+a:visited {
+  color: #0366d6; }
+
+h1, h2, h3 {
+  border-bottom: 1px solid #eaecef;
+  color: #111;
+  /* Darker */ }</style>
+      </body>
+    </html>
