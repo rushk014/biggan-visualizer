@@ -21,14 +21,14 @@ usage: visualize.py [-h] -s SONG [--resolution {128,256,512}] [-d DURATION]
 
 ```
 
-In order to speed up runtime, code can be run on [Google Colab](https://research.google.com/colaboratory/) GPUs (or other cloud notebook providers) using `deep_music_visualizer.ipynb`.
+In order to speed up runtime, code can be run on [Google Colab](https://research.google.com/colaboratory/) GPUs (or other cloud notebook providers) using `deep_music_visualizer.ipynb` (hosted [here](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/deep_music_visualizer.ipynb)).
 
 # Arguments
 
 |short|long|default|range|help|
 | :--- | :--- | :--- | :--- | :--- |
 |`-h`|`--help`|||show this help message and exit|
-|`-s`|`--song`|`input/romantic.mp3`||path to input audio file|
+|`-s`|`--song`|`input/romantic.mp3`||path to input audio file `[REQUIRED]`|
 ||`--resolution`|`512`|`{128,256,512}`|output video resolution|
 |`-d`|`--duration`|`None`||output video duration|
 |`-ps`|`--pitch_sensitivity`|`220`|`[200-295]`|controls the sensitivity of the class vector to changes in pitch|
