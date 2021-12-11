@@ -21,7 +21,7 @@ usage: visualize.py [-h] -s SONG [--resolution {128,256,512}] [-d DURATION]
 
 ```
 
-In order to speed up runtime, code can be run on [Google Colab](https://research.google.com/colaboratory/) GPUs (or other cloud notebook providers) using `deep_music_visualizer.ipynb` (hosted [here](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/biggan_music_visualizer.ipynb)).
+In order to speed up runtime, code can be run on [Google Colab](https://research.google.com/colaboratory/) GPUs (or other cloud notebook providers) using `biggan_music_visualizer.ipynb` (hosted [here](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/biggan_music_visualizer.ipynb)).
 
 # Arguments
 
