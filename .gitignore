@@ -1,8 +1,8 @@
 __pycache__
 .DS_Store
 input/*
-!input/example.mp3
+!input/.gitkeep
 output/*
-!output/example.mp4
+!output/.gitkeep
 saved_vector/*
-!saved_vector/
+!saved_vector/.gitkeep
