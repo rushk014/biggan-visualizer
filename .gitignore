@@ -1,4 +1,6 @@
 __pycache__
 .DS_Store
+input/*
+!input/example.mp3
 output/*
 !output/example.mp4

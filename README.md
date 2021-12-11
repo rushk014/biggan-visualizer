@@ -19,6 +19,9 @@ usage: visualize.py [-h] -s SONG [--resolution {128,256,512}] [-d DURATION]
                [-l LYRICS]
 
 ```
+
+In order to speed up runtime, code can be run on [Google Colab](https://research.google.com/colaboratory/) GPUs (or other cloud notebook providers) using `deep_music_visualizer.ipynb`.
+
 # Arguments
 
 |short|long|default|range|help|
@@ -40,3 +43,14 @@ usage: visualize.py [-h] -s SONG [--resolution {128,256,512}] [-d DURATION]
 ||`--use_last_vectors`|`False`||set flag to use previous saved class/noise vectors|
 ||`--use_last_classes`|`False`||set flag to use previous classes|
 |`-l`|`--lyrics`|`None`||path to lyrics file; setting [--lyrics LYRICS] computes classes by semantic similarity under BERT encodings|
+
+# Acknowledgments
+
+Thanks to Matt Siegelman for providing the [inspiration](https://towardsdatascience.com/the-deep-music-visualizer-using-sound-to-explore-the-latent-space-of-biggan-198cd37dac9a) as well as a [boilerplate](https://github.com/msieg/deep-music-visualizer) for the project.
+
+# References
+
+- [Large Scale GAN Training for High Fidelity Natural Image Synthesis](https://arxiv.org/abs/1809.11096)
+- [The Deep Music Visualizer: Using sound to explore the latent space of BigGAN](https://towardsdatascience.com/the-deep-music-visualizer-using-sound-to-explore-the-latent-space-of-biggan-198cd37dac9a)
+- [BigGanEx: A Dive into the Latent Space of BigGan](https://thegradient.pub/bigganex-a-dive-into-the-latent-space-of-biggan/)
+- [Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks](https://arxiv.org/abs/1908.10084)
