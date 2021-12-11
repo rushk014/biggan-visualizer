@@ -1,7 +1,6 @@
 __pycache__
 .DS_Store
 input/*
-!input/.gitkeep
 output/*
 !output/.gitkeep
 saved_vector/*
