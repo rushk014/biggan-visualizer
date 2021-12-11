@@ -1,0 +1,7 @@
+[mediaTypes]
+  [mediaTypes."text/droplist"]
+    suffixes = ["droplist"]
+
+[outputFormats.droplist]
+mediatype = "text/droplist"
+isPlainText = true
