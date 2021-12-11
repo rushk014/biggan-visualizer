@@ -101,7 +101,7 @@ if __name__ == '__main__':
         print(cid, c_dict[c])
     
     # Load pre-trained model
-    print('Loading BigGAN \n')
+    print('\nLoading BigGAN \n')
     model = BigGAN.from_pretrained(model_name)
 
     print('Generating vectors \n')
