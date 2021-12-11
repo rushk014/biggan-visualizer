@@ -62,4 +62,4 @@ In the above example, semantic similarity between the lyrics `dough` and `chicke
 
 ## Making Your Own
 
-Use the provided [Google Colab notebook](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/deep_music_visualizer.ipynb) to generate your own Deep Music Videos!
+Use the provided [Google Colab notebook](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/biggan_music_visualizer.ipynb) to generate your own Deep Music Videos!
