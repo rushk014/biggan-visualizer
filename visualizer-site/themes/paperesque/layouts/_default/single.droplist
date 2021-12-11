@@ -1,3 +1,0 @@
-{{ with (.Page.Scratch.Get "droplist") }}
-    {{- range (. | sort | uniq) }}{{.}}
-{{end -}}{{end}}
