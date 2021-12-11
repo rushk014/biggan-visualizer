@@ -1,0 +1,27 @@
+{{ define "content" }}
+<section id="main" class="content-container article-pad-v">
+  <div>
+    <h1 id="title" style="margin-bottom: 0.75em">{{.Title}}</h1>
+    <ul id="list" class="list-unstyled list-of-titles">
+      {{ range .Data.Terms.ByCount }}
+      {{ with .Page }}
+        {{ $numDrafts := len (where .Pages ".Draft" true) }}
+          <li class="{{ if gt $numDrafts 0 }}draft{{ end }}">
+            <a href="{{ .RelPermalink}}">
+              <span class="post-title">#{{ .Title }}</span>
+              <br>
+              <span class="post-meta">{{len .Pages}} {{if ne (len .Pages) 1}}entries{{else}}entry{{end}}</span>
+              <br>
+              {{ if gt $numDrafts 0 }}
+                <span class="post-meta draft">Including {{ $numDrafts }} {{if ne $numDrafts 1}}drafts{{else}}draft{{end}}</span>
+                <br>
+              {{ end }}
+              <span class="post-meta">Last updated {{ .Lastmod.Format "January 2, 2006" }}</span>
+            </a>
+          </li>
+        {{ end }}
+      {{ end }}
+    </ul>
+  </div>
+</section>
+{{ end }}
