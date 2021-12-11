@@ -28,7 +28,7 @@ def random_classes(num_classes=12):
     random.shuffle(classes)
     return classes[:num_classes]
 
-def semantic_classes(lyrics, class_dict, num_classes=12, device='cpu'):
+def semantic_classes(lyrics, class_list, num_classes=12, device='cpu'):
     transform = SentenceTransformer('all-MiniLM-L6-v2', device=device)
     with open(lyrics) as lyrics_file:
         lines = lyrics_file.readlines()
@@ -36,11 +36,8 @@ def semantic_classes(lyrics, class_dict, num_classes=12, device='cpu'):
     best_keys = PriorityQueue()
     for l in tqdm(lines):
         best_key, best_sim = 0, -1
-        for key in class_dict:
-            try:
-                class_emb = transform.encode(class_dict[key], convert_to_tensor=True)
-            except:
-                print(key)
+        for key in range(len(class_list)):
+            class_emb = transform.encode(class_list[key], convert_to_tensor=True)
             l_emb = transform.encode(l, convert_to_tensor=True)
             cos_sim = util.pytorch_cos_sim(class_emb, l_emb)
             if cos_sim.item() > best_sim:

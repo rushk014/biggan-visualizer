@@ -4,3 +4,5 @@ input/*
 !input/example.mp3
 output/*
 !output/example.mp4
+saved_vector/*
+!saved_vector/

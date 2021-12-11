@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
     # load class names
     with open('imagenet-simple-labels.json') as f:
-        c_dict = json.load(f)
+        clist = json.load(f)
 
     if args.duration:
         frame_lim = get_frame_lim(args.duration, frame_length, batch_size)
@@ -91,14 +91,14 @@ if __name__ == '__main__':
         classes = args.classes
         assert len(classes) == num_classes, "number of classes must match [num_classes]"
     elif args.lyrics:
-        classes = semantic_classes(args.lyrics, c_dict, num_classes=num_classes, device=device)
+        classes = semantic_classes(args.lyrics, clist, num_classes=num_classes, device=device)
     else:
         classes = random_classes(num_classes=num_classes)
     
     # print class names
     print('Chosen classes: \n')
-    for cid, c in enumerate(classes):
-        print(cid, c_dict[c])
+    for c in classes:
+        print(c, clist[c])
     
     # Load pre-trained model
     print('\nLoading BigGAN \n')
