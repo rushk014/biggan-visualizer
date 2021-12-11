@@ -22,7 +22,7 @@ def setup_parser():
     parser.add_argument("--frame_length", type=int, default=512, metavar="i*2^6", help="number of audio frames to video frames in the output")
     parser.add_argument("--truncation", type=float, default=1, metavar="[0.1-1]", help="BigGAN truncation parameter controls complexity of structure within frames")
     parser.add_argument("--smooth_factor", type=int, default=20, metavar="[10-30]", help="controls interpolation between class vectors to smooth rapid flucations")
-    parser.add_argument("--batch_size", type=int, default=30, help="BigGAN batch_size")
+    parser.add_argument("--batch_size", type=int, default=20, help="BigGAN batch_size")
     parser.add_argument("-o", "--output_file", default="", help="name of output file stored in output/, defaults to [--song] path base_name")
     parser.add_argument("--use_last_vectors", action="store_true", default=False, help="set flag to use previous saved class/noise vectors")
     parser.add_argument("--use_last_classes", action="store_true", default=False, help="set flag to use previous classes")

@@ -39,7 +39,7 @@ In order to speed up runtime, code can be run on [Google Colab](https://research
 ||`--frame_length`|`512`|`i*2^6`|number of audio frames to video frames in the output|
 ||`--truncation`|`1`|`[0.1-1]`|BigGAN truncation parameter controls complexity of structure within frames|
 ||`--smooth_factor`|`20`|`[10-30]`|controls interpolation between class vectors to smooth rapid flucations|
-||`--batch_size`|`30`||BigGAN batch_size|
+||`--batch_size`|`20`||BigGAN batch_size|
 |`-o`|`--output_file`|||name of output file stored in output/, defaults to [--song] path base_name|
 ||`--use_last_vectors`|`False`||set flag to use previous saved class/noise vectors|
 ||`--use_last_classes`|`False`||set flag to use previous classes|
