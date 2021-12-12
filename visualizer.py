@@ -15,7 +15,7 @@ def setup_parser():
     parser = argparse.ArgumentParser(description="Audio visualizer using BigGAN and semantic analysis", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-s", "--song", required=True, default="input/romantic.mp3", help="path to input audio file")
     parser.add_argument("-r", "--resolution", default="512", choices=["128", "256", "512"], help="output video resolution")
-    parser.add_argument("-d", "--duration", type=int, help="output video duration")
+    parser.add_argument("-d", "--duration", type=int, help="output video duration, defaults to entire song length")
     parser.add_argument("-ps", "--pitch_sensitivity", type=int, default=220, metavar="[200-295]", help="controls the sensitivity of the class vector to changes in pitch")
     parser.add_argument("-ts", "--tempo_sensitivity", type=float, default=0.25, metavar="[0.05-0.8]", help="controls the sensitivity of the noise vector to changes in volume and tempo")
     parser.add_argument("-c", "--classes", nargs='+', type=int, help="manually specify [--num_classes] ImageNet classes")
