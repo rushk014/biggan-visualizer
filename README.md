@@ -16,7 +16,7 @@ usage: visualize.py [-h] -s SONG [--resolution {128,256,512}] [-d DURATION]
                [--jitter [0-1]] [--frame_length i*2^6] [--truncation [0.1-1]]
                [--smooth_factor [10-30]] [--batch_size BATCH_SIZE]
                [-o OUTPUT_FILE] [--use_last_vectors] [--use_last_classes]
-               [-l LYRICS]
+               [-l LYRICS] [-e {sbert,doc2vec}] [-es {best,random,ransac}]
 
 ```
 
@@ -43,6 +43,8 @@ In order to speed up runtime, code can be run on [Google Colab](https://research
 ||`--use_last_vectors`|`False`||set flag to use previous saved class/noise vectors|
 ||`--use_last_classes`|`False`||set flag to use previous classes|
 |`-l`|`--lyrics`|`None`||path to lyrics file; setting `[--lyrics LYRICS]` computes classes by semantic similarity under BERT encodings|
+|`-e`|`--encoding`|`sbert`|`{sbert,doc2vec}`|controls choice of sentence embeddings technique|
+|`-es`|`--encoding_strategy`|`None`|`{random,best,ransac}`|controls strategy for choosing classes: `[-e sbert]` can use `best` or `random` while `[-e doc2vec]` can use `ransac`|
 
 # Acknowledgments
 

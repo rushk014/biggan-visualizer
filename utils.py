@@ -1,11 +1,7 @@
 import librosa
 import numpy as np
 import random
-import re
-from tqdm import tqdm
 from pytorch_pretrained_biggan import truncated_noise_sample
-from sentence_transformers import SentenceTransformer, util
-from queue import PriorityQueue
 
 CV_SIZE = 1000
 NV_SIZE = 128
@@ -27,29 +23,6 @@ def random_classes(num_classes=12):
     classes = list(range(1000))
     random.shuffle(classes)
     return classes[:num_classes]
-
-def semantic_classes(lyrics, class_list, num_classes=12, device='cpu'):
-    transform = SentenceTransformer('all-MiniLM-L6-v2', device=device)
-    with open(lyrics) as lyrics_file:
-        lines = lyrics_file.readlines()
-        lines = [line.rstrip() for line in lines if not re.match('\[.*\]$', line.rstrip())]
-    best_keys = PriorityQueue()
-    for l in tqdm(lines):
-        best_key, best_sim = 0, -1
-        for key in range(len(class_list)):
-            class_emb = transform.encode(class_list[key], convert_to_tensor=True)
-            l_emb = transform.encode(l, convert_to_tensor=True)
-            cos_sim = util.pytorch_cos_sim(class_emb, l_emb)
-            if cos_sim.item() > best_sim:
-                best_key, best_sim = key, cos_sim.item()
-        
-        best_keys.put((-best_sim, best_key))
-    # get num_classes best keys in PriorityQueue
-    keys = []
-    while len(keys) < num_classes:
-        pq_key = best_keys.get()[1]
-        if pq_key not in keys: keys.append(pq_key)
-    return keys
 
 def get_sensitivity(jitter=0.5):
     return np.random.choice([1, 1-jitter], size=NV_SIZE)

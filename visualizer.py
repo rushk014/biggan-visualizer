@@ -3,16 +3,18 @@ import moviepy.editor as mpy
 import torch
 from tqdm import tqdm
 import librosa
-from utils import generate_vectors, get_frame_lim, random_classes, semantic_classes, to_np
 import numpy as np
 from pytorch_pretrained_biggan import (BigGAN, convert_to_images)
 import os
 import json
 
+from encoding import semantic_classes, doc2vec_classes
+from utils import generate_vectors, get_frame_lim, random_classes, to_np
+
 def setup_parser():
     parser = argparse.ArgumentParser(description="Audio visualizer using BigGAN and semantic analysis", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-s", "--song", required=True, default="input/romantic.mp3", help="path to input audio file")
-    parser.add_argument("--resolution", default='512', choices=['128', '256', '512'], help="output video resolution")
+    parser.add_argument("--resolution", default="512", choices=["128", "256", "512"], help="output video resolution")
     parser.add_argument("-d", "--duration", type=int, help="output video duration")
     parser.add_argument("-ps", "--pitch_sensitivity", type=int, default=220, metavar="[200-295]", help="controls the sensitivity of the class vector to changes in pitch")
     parser.add_argument("-ts", "--tempo_sensitivity", type=float, default=0.25, metavar="[0.05-0.8]", help="controls the sensitivity of the noise vector to changes in volume and tempo")
@@ -27,6 +29,8 @@ def setup_parser():
     parser.add_argument("--use_last_vectors", action="store_true", default=False, help="set flag to use previous saved class/noise vectors")
     parser.add_argument("--use_last_classes", action="store_true", default=False, help="set flag to use previous classes")
     parser.add_argument("-l", "--lyrics", help="path to lyrics file; setting [--lyrics LYRICS] computes classes by semantic similarity under BERT encodings")
+    parser.add_argument("-e", "--encoding", default="sbert", choices=["sbert", "doc2vec"], help="controls choice of sentence embeddings technique")
+    parser.add_argument("-es", "--encoding_strategy", default=None, choices=["best", "random", "ransac"], help="controls strategy for choosing classes: -e sbert can use 'best' or 'random' while -e doc2vec can use 'ransac'")
     return parser
 
 
@@ -62,10 +66,20 @@ if __name__ == '__main__':
     use_last_vectors = args.use_last_vectors
     truncation = args.truncation
     num_classes = args.num_classes
+    encoding = args.encoding
     if args.output_file:
         outname = 'output/' + args.output_file
     else:
         outname = 'output/' + os.path.basename(args.song).split('.')[0] + '.mp4'
+    if args.encoding_strategy:
+        encoding_strategy = args.encoding_strategy
+        assert not (encoding == 'sbert' and encoding_strategy == 'ransac')
+        assert not (encoding == 'doc2vec' and encoding_strategy != 'ransac')
+    else:
+        if encoding == 'sbert':
+            encoding_strategy = 'random'
+        elif encoding == 'doc2vec':
+            encoding_strategy = 'ransac'
 
     print('Reading audio\n')
     y, sr = librosa.load(song)
@@ -91,7 +105,10 @@ if __name__ == '__main__':
         classes = args.classes
         assert len(classes) == num_classes, "number of classes must match [num_classes]"
     elif args.lyrics:
-        classes = semantic_classes(args.lyrics, clist, num_classes=num_classes, device=device)
+        if args.encoding == 'sbert':
+            classes = semantic_classes(args.lyrics, clist, num_classes=num_classes, device=device, strategy=encoding_strategy)
+        elif args.encoding == 'doc2vec':
+            classes = doc2vec_classes(args.lyrics, clist, num_classes=num_classes, strategy=encoding_strategy)
     else:
         classes = random_classes(num_classes=num_classes)
     

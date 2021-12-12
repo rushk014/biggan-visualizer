@@ -5,3 +5,5 @@ librosa
 numpy
 pytorch_pretrained_biggan
 sentence-transformers
+gensim
+scipy
