@@ -2,9 +2,9 @@
 
 ## Inspiration
 
-This project was inspired by my desire to explore the intersection of audio and image processing. After doing some research, I came across [videos](https://youtu.be/A55NzPmB5PE?t=96) exploring the latent space of [BigGAN (Brock et al., 2018)](https://arxiv.org/abs/1809.11096). BigGAN differs from traditional GAN in that is it truly *big*, containing over 300 million parameters. As a result, interpolating across the latent image space contains a lot of rich, complex structure. My project uses audio processing (as well as NLP) to control the interpolation within this latent space, and is deeply inspired by the Matt Siegelman's approach [here](https://towardsdatascience.com/the-deep-music-visualizer-using-sound-to-explore-the-latent-space-of-biggan-198cd37dac9a). Using this technique, we can produce trippy synthetic music videos as seen below:
+This project was inspired by my desire to explore the intersection of audio and image processing. After doing some research, I came across [videos](https://youtu.be/A55NzPmB5PE?t=96) exploring the latent space of [BigGAN (Brock et al., 2018)](https://arxiv.org/abs/1809.11096). BigGAN differs from traditional GAN in that is it truly ***big***, containing over 300 million trainable parameters. As a result, interpolating across the latent image space contains a lot of rich, complex structure. My project uses audio processing (as well as NLP) to control the interpolation within this latent space, and is deeply inspired by the Matt Siegelman's approach [here](https://towardsdatascience.com/the-deep-music-visualizer-using-sound-to-explore-the-latent-space-of-biggan-198cd37dac9a). Using this technique, we can produce trippy synthetic music videos as seen below:
 
-[![biggan-visualizer-example](https://res.cloudinary.com/marcomontalbano/image/upload/v1639185857/video_to_markdown/images/youtube--8JY0UdOaHfs-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/8JY0UdOaHfs "biggan-visualizer-example")
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3m8v3Rt9-YE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Audio Processing
 
