@@ -40,7 +40,7 @@ In order to implement a smarter choice of classes, my idea was to use a similari
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/badjh3FQuUA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-In the above example, semantic similarity between the lyrics `dough` and `chicken chili` causes the algorithm to select several ImageNet classes associated with food. This is a failure to account for the contextual meaning of the text. An interesting future development would be to implement sentiment analysis, alongside other contextual NLP techniques, to further account for subjective differences.
+In the above example, the high semantic similarity between the words `dough` and `chicken chili` and ImageNet classes related to food causes the algorithm to bias ImageNet classes associated with food. A potential future improvment would be to develop a weighted scoring method to evaluate similarity at various grains to account for these low frequency, high similarity embeddings. 
 
 ## Examples
 
