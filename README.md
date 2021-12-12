@@ -10,17 +10,22 @@ This visualizer explores [BigGAN (Brock et al., 2018)](https://arxiv.org/abs/180
 
 
 ```bash
-usage: visualize.py [-h] -s SONG [--resolution {128,256,512}] [-d DURATION]
+usage: visualize.py [-h] -s SONG [-r {128,256,512}] [-d DURATION]
                [-ps [200-295]] [-ts [0.05-0.8]]
-               [--classes CLASSES [CLASSES ...]] [-n NUM_CLASSES]
-               [--jitter [0-1]] [--frame_length i*2^6] [--truncation [0.1-1]]
-               [--smooth_factor [10-30]] [--batch_size BATCH_SIZE]
+               [-c CLASSES [CLASSES ...]] [-n NUM_CLASSES]
+               [-j [0-1]] [-fl i*2^6] [-t [0.1-1]]
+               [-sf [10-30]] [-bs BATCH_SIZE]
                [-o OUTPUT_FILE] [--use_last_vectors] [--use_last_classes]
                [-l LYRICS] [-e {sbert,doc2vec}] [-es {best,random,ransac}]
 
 ```
 
-In order to speed up runtime, code can be run on [Google Colab](https://research.google.com/colaboratory/) GPUs (or other cloud notebook providers) using `biggan_music_visualizer.ipynb` (hosted [here](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/biggan_music_visualizer.ipynb)).
+- In order to speed up runtime, code can be run on [Google Colab](https://research.google.com/colaboratory/) GPUs (or other cloud notebook providers) using `biggan_music_visualizer.ipynb` (hosted [here](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/biggan_music_visualizer.ipynb)).
+- The `[-d DURATION]` parameter can be useful to generate short videos while tweaking other parameters. Once the desired parameters are set, use the `[--use_last_vector]` flag and remove the `[-d DURATION]` parameter to generate the same video at full length.
+- Reducing the output resolution with `[-r {128,256,512}]` and/or increasing the frame length with `[-fl i*2^6]` can help reduce the runtime.
+- To compute classes through semantic similarity to a lyrics file, use the `[-l LYRICS]` parameter. The embedding technique and strategy for choosing classes can be set with `[-e {sbert,doc2vec}]` and `[-es {best,random,ransac}]` respectively.
+- Pitch and tempo sensitivity can be set with  `[-ps [200-295]]` and `[-ts [0.05-0.8]]` respectively. Jitter, truncation and smooth factor can be set with `[-j [0-1]]`, `[-t [0.1-1]]` and `[-sf [10-30]]` respectively.
+- See the help column of the [`arguments`](#arguments) section for details on all parameters.
 
 # Arguments
 
