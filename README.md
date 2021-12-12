@@ -9,17 +9,20 @@ This visualizer explores [BigGAN (Brock et al., 2018)](https://arxiv.org/abs/180
 # Usage:
 
 ```bash
-usage: visualize.py [-h] -s SONG [-r {128,256,512}] [-d DURATION]
-               [-ps [200-295]] [-ts [0.05-0.8]]
-               [-c CLASSES [CLASSES ...]] [-n NUM_CLASSES]
-               [-j [0-1]] [-fl i*2^6] [-t [0.1-1]]
-               [-sf [10-30]] [-bs BATCH_SIZE]
-               [-o OUTPUT_FILE] [--use_last_vectors] [--use_last_classes]
-               [-l LYRICS] [-e {sbert,doc2vec}] [-es {best,random,ransac}]
+usage: visualizer.py [-h] -s SONG [-r {128,256,512}] [-d DURATION]
+                     [-ps [200-295]] [-ts [0.05-0.8]]
+                     [-c CLASSES [CLASSES ...]] [-n NUM_CLASSES] [-j [0-1]]
+                     [-fl i*2^6] [-t [0.1-1]] [-sf [10-30]] [-bs BATCH_SIZE]
+                     [-o OUTPUT_FILE] [--use_last_vectors]
+                     [--use_last_classes] [--sort_pitch] [-l LYRICS]
+                     [-e {sbert,doc2vec}] [-es {best,random,ransac}]
 
 ```
 
 - In order to speed up runtime, code can be run on [Google Colab](https://research.google.com/colaboratory/) GPUs (or other cloud notebook providers) using `biggan_music_visualizer.ipynb` (hosted [here](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/biggan_music_visualizer.ipynb)).
+- The `[-n NUM_CLASSES]` parameter selects the number of classes to interpolate between. 
+- Default behavior is to select `[-n NUM_CLASSES]` random classes. The `[-c CLASSES [CLASSES ...]]` parameter can be used to select specific ImageNet classes. A full list can be found [here](https://deeplearning.cms.waikato.ac.nz/user-guide/class-maps/IMAGENET/), and a list categorized by coarse descriptors [here](https://github.com/noameshed/novelty-detection/blob/master/imagenet_categories.csv). Be sure to set `[-n NUM_CLASSES]` to the number of chosen classes.
+- Use the `[--sort_by_power]` flag to map classes to the `[-n NUM_CLASSES]` highest power pitches. By default, classes are mapped to a chromatic scale.
 - The `[-d DURATION]` parameter can be useful to generate short videos while tweaking other parameters. Once the desired parameters are set, use the `[--use_last_vector]` flag and remove the `[-d DURATION]` parameter to generate the same video at full length.
 - Reducing the output resolution with `[-r {128,256,512}]` and/or increasing the frame length with `[-fl i*2^6]` can help reduce the runtime.
 - To compute classes through semantic similarity to a lyrics file, use the `[-l LYRICS]` parameter. The embedding technique and strategy for choosing classes can be set with `[-e {sbert,doc2vec}]` and `[-es {best,random,ransac}]` respectively.
@@ -37,7 +40,7 @@ usage: visualize.py [-h] -s SONG [-r {128,256,512}] [-d DURATION]
 |`-ps`|`--pitch_sensitivity`|`220`|`[200-295]`|controls the sensitivity of the class vector to changes in pitch|
 |`-ts`|`--tempo_sensitivity`|`0.25`|`[0.05-0.8]`|controls the sensitivity of the noise vector to changes in volume and tempo|
 |`-c`|`--classes`|`None`||manually specify `[--num_classes]` ImageNet classes|
-|`-n`|`--num_classes`|`12`|`[1-1000]`|number of unique classes to use|
+|`-n`|`--num_classes`|`12`|`[1-12]`|number of unique classes to use|
 |`-j`|`--jitter`|`0.5`|`[0-1]`|controls jitter of the noise vector to reduce repitition|
 |`-fl`|`--frame_length`|`512`|`i*2^6`|number of audio frames to video frames in the output|
 |`-t`|`--truncation`|`1`|`[0.1-1]`|BigGAN truncation parameter controls complexity of structure within frames|
@@ -46,6 +49,7 @@ usage: visualize.py [-h] -s SONG [-r {128,256,512}] [-d DURATION]
 |`-o`|`--output_file`|||name of output file stored in `output/`, defaults to `[--song]` path base_name|
 ||`--use_last_vectors`|`False`|`bool`|set flag to use previous saved class/noise vectors|
 ||`--use_last_classes`|`False`|`bool`|set flag to use previous classes|
+||`--sort_pitches`|`False`|`bool`|set flag to sort pitches by the ordering of classes|
 |`-l`|`--lyrics`|`None`||path to lyrics file; setting `[--lyrics LYRICS]` computes classes by semantic similarity under BERT encodings|
 |`-e`|`--encoding`|`sbert`|`{sbert,doc2vec}`|controls choice of sentence embeddings technique|
 |`-es`|`--encoding_strategy`|`None`|`{random,best,ransac}`|controls strategy for choosing classes: `[-e sbert]` can use `best` or `random` while `[-e doc2vec]` can use `ransac`|
@@ -56,7 +60,7 @@ Thanks to Matt Siegelman for providing the [inspiration](https://towardsdatascie
 
 # References
 
-- [Large Scale GAN Training for High Fidelity Natural Image Synthesis](https://arxiv.org/abs/1809.11096)
 - [The Deep Music Visualizer: Using sound to explore the latent space of BigGAN](https://towardsdatascience.com/the-deep-music-visualizer-using-sound-to-explore-the-latent-space-of-biggan-198cd37dac9a)
 - [BigGanEx: A Dive into the Latent Space of BigGan](https://thegradient.pub/bigganex-a-dive-into-the-latent-space-of-biggan/)
+- [Large Scale GAN Training for High Fidelity Natural Image Synthesis](https://arxiv.org/abs/1809.11096)
 - [Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks](https://arxiv.org/abs/1908.10084)

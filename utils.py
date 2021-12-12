@@ -61,13 +61,13 @@ def smooth(class_vectors,smooth_factor):
             class_vectors_sm.append(cvc)
     return np.array(class_vectors_sm)
 
-def generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes, preload, truncation):
+def generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes, preload, truncation, frame_length):
     if preload:
         return np.load('saved_vectors/class_vectors.npy'), np.load('saved_vectors/noise_vectors.npy')
     if classes is None:
         classes = random_classes()
-    spec_mean, grad_mean = generate_power(y, sr)
-    chroma, chromasort = generate_chroma(y, sr)
+    spec_mean, grad_mean = generate_power(y, sr, frame_length)
+    chroma, chromasort = generate_chroma(y, sr, frame_length)
     cv1, nv1 = default_cv(chroma, chromasort, classes), truncated_noise_sample(truncation=truncation)[0]
     cvs, nvs = [cv1], [nv1]
     update_dir = np.where(nv1 < 0, 1, -1)

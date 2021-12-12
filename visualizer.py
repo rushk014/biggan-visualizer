@@ -9,7 +9,7 @@ import os
 import json
 
 from encoding import semantic_classes, doc2vec_classes
-from utils import generate_vectors, get_frame_lim, random_classes, to_np
+from utils import generate_chroma, generate_vectors, get_frame_lim, random_classes, to_np
 
 def setup_parser():
     parser = argparse.ArgumentParser(description="Audio visualizer using BigGAN and semantic analysis", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -28,6 +28,7 @@ def setup_parser():
     parser.add_argument("-o", "--output_file", default="", help="name of output file stored in output/, defaults to [--song] path base_name")
     parser.add_argument("--use_last_vectors", action="store_true", default=False, help="set flag to use previous saved class/noise vectors")
     parser.add_argument("--use_last_classes", action="store_true", default=False, help="set flag to use previous classes")
+    parser.add_argument("--sort_by_power", action="store_true", default=False, help="set flag to sort classes by power of pitches")
     parser.add_argument("-l", "--lyrics", help="path to lyrics file; setting [--lyrics LYRICS] computes classes by semantic similarity under BERT encodings")
     parser.add_argument("-e", "--encoding", default="sbert", choices=["sbert", "doc2vec"], help="controls choice of sentence embeddings technique")
     parser.add_argument("-es", "--encoding_strategy", default=None, choices=["best", "random", "ransac"], help="controls strategy for choosing classes: -e sbert can use 'best' or 'random' while -e doc2vec can use 'ransac'")
@@ -67,10 +68,12 @@ if __name__ == '__main__':
     truncation = args.truncation
     num_classes = args.num_classes
     encoding = args.encoding
+
     if args.output_file:
         outname = 'output/' + args.output_file
     else:
         outname = 'output/' + os.path.basename(args.song).split('.')[0] + '.mp4'
+    
     if args.encoding_strategy:
         encoding_strategy = args.encoding_strategy
         assert not (encoding == 'sbert' and encoding_strategy == 'ransac')
@@ -84,7 +87,12 @@ if __name__ == '__main__':
     print('Reading audio\n')
     y, sr = librosa.load(song)
 
-    #set device
+    if args.duration:
+        frame_lim = get_frame_lim(args.duration, frame_length, batch_size)
+    else:
+        frame_lim = get_frame_lim(len(y)/sr, frame_length, batch_size)
+
+    # set device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print('Using device:', device, '\n')
 
@@ -92,10 +100,6 @@ if __name__ == '__main__':
     with open('imagenet-simple-labels.json') as f:
         clist = json.load(f)
 
-    if args.duration:
-        frame_lim = get_frame_lim(args.duration, frame_length, batch_size)
-    else:
-        frame_lim = get_frame_lim(len(y)/sr, frame_length, batch_size)
     if args.use_last_classes:
         cvs = np.load('saved_vectors/class_vectors.npy')
         classes = list(np.where(cvs[0]>0)[0])
@@ -112,6 +116,10 @@ if __name__ == '__main__':
     else:
         classes = random_classes(num_classes=num_classes)
     
+    if args.sort_by_power:
+        _, csort = generate_chroma(y, sr, frame_length=frame_length)
+        classes = [classes[i] for i in np.argsort(csort[:num_classes])]
+    
     # print class names
     print('Chosen classes: \n')
     for c in classes:
@@ -122,7 +130,7 @@ if __name__ == '__main__':
     model = BigGAN.from_pretrained(model_name)
 
     print('Generating vectors \n')
-    class_vectors, noise_vectors = generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes, use_last_vectors, truncation)    
+    class_vectors, noise_vectors = generate_vectors(y, sr, tempo_sensitivity, pitch_sensitivity, classes, use_last_vectors, truncation, frame_length)    
     noise_vectors = torch.Tensor(np.array(noise_vectors))      
     class_vectors = torch.Tensor(np.array(class_vectors))      
 
