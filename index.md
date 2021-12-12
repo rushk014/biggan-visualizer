@@ -38,19 +38,24 @@ There are a number of hyperparameters responsible for controlling the output vid
 
 In order to implement a smarter choice of classes, my idea was to use a similarity metric between encodings of the lyrics corpus and each ImageNet class. Following the framework of this [paper](https://arxiv.org/abs/1908.10084), I choose a Siamese BERT network to encode the sentences, and compared semantic similarity using a cosine-similarity metric. I then select the most similar `[num_classes]` unique classes to use for frame generation.
 
-[![itkanbesonic](https://res.cloudinary.com/marcomontalbano/image/upload/v1639193112/video_to_markdown/images/youtube--badjh3FQuUA-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/badjh3FQuUA "itkanbesonic")
+<iframe width="560" height="315" src="https://www.youtube.com/embed/badjh3FQuUA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 In the above example, semantic similarity between the lyrics `dough` and `chicken chili` causes the algorithm to select several ImageNet classes associated with food. This is a failure to account for the contextual meaning of the text. An interesting future development would be to implement sentiment analysis, alongside other contextual NLP techniques, to further account for subjective differences.
 
 ## Examples
 
-- Run DMT - *Romantic*
-
-[![romantic](https://res.cloudinary.com/marcomontalbano/image/upload/v1639185857/video_to_markdown/images/youtube--8JY0UdOaHfs-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/8JY0UdOaHfs "romantic")
-
-- Moondog - *High on a Rocky Ledge*
-
-[![highonarockyledge](https://res.cloudinary.com/marcomontalbano/image/upload/v1639193645/video_to_markdown/images/youtube--gxf-4iyurvE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/gxf-4iyurvE "highonarockyledge")
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/8JY0UdOaHfs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="caption">Run DMT - *Romantic*</div>
+        </div>
+        <div class="col">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/gxf-4iyurvE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="caption">Moondog - *High on a Rocky Ledge*</div>
+        </div>
+    </div>
+</div>
 
 - Knxwledge - *itkanbe[sonic]*
 
