@@ -6,6 +6,8 @@ import random
 from gensim.utils import tokenize
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from scipy.spatial.distance import cosine
+from utils import CV_SIZE
+import numpy as np
 
 def parse_lyrics(lyrics_path):
     with open(lyrics_path) as lyrics_file:
@@ -13,7 +15,7 @@ def parse_lyrics(lyrics_path):
         lines = [line.rstrip() for line in lines if not re.match('\[.*\]$', line.rstrip())]
     return lines
 
-def semantic_classes(lyrics, class_list, num_classes=12, device='cpu', strategy='random'):
+def semantic_classes(lyrics, class_list, num_classes=12, device='cpu', strategy='best'):
     print('Semantic Encoding\n')
     transform = SentenceTransformer('all-MiniLM-L6-v2', device=device)
     lines = parse_lyrics(lyrics)
@@ -48,9 +50,17 @@ def doc2vec_classes(lyrics, class_list, num_classes=12, strategy='ransac'):
     lines = parse_lyrics(lyrics)
     tagged_l = [TaggedDocument(d, [i]) for i, d in enumerate(doc_tokenize(lines))]
     model = Doc2Vec(tagged_l, vector_size=20, window=2, min_count=1, epochs=100)
-    lvec = model.infer_vector(' '.join(lyrics).split())
-    if strategy == 'ransac':
-        best_classes = ransac(class_list, lvec, model, num_classes, iter=10000)
+    if strategy == 'best':
+        cos_dists = []
+        for l in tqdm(lines):
+            lvec = model.infer_vector(l.split())
+            for c in class_list:
+                cos_dists.append(cosine(model.infer_vector([c]), lvec))
+        best_classes = np.array(cos_dists).argsort() % CV_SIZE
+        best_classes = top_n_unique(best_classes, num_classes)
+    elif strategy == 'ransac':
+        lvec = model.infer_vector(' '.join(lyrics).split())
+        best_classes = ransac(class_list, lvec, model, num_classes, iter=30000)
     return best_classes
 
 def ransac(clist, lvec, model, num_classes, iter=5000):
@@ -64,7 +74,14 @@ def ransac(clist, lvec, model, num_classes, iter=5000):
             best_idx, best_dist = csample_idx, cdist
     return best_idx
 
-        
+def top_n_unique(list, n):
+    out = []
+    for i in range(len(list)):
+        if list[i] not in out:
+            out.append(list[i])
+        if len(out) == n:
+            break
+    return out
 
 def doc_tokenize(doc):
-    return [tokenize(s.lower()) for s in doc]
+    return [list(tokenize(s.lower())) for s in doc]

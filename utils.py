@@ -20,7 +20,7 @@ def generate_chroma(y, sr, frame_length=512):
     return chroma, chromasort
 
 def random_classes(num_classes=12):
-    classes = list(range(1000))
+    classes = list(range(CV_SIZE))
     random.shuffle(classes)
     return classes[:num_classes]
 
