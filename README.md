@@ -8,7 +8,6 @@ This visualizer explores [BigGAN (Brock et al., 2018)](https://arxiv.org/abs/180
 
 # Usage:
 
-
 ```bash
 usage: visualize.py [-h] -s SONG [-r {128,256,512}] [-d DURATION]
                [-ps [200-295]] [-ts [0.05-0.8]]
