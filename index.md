@@ -44,30 +44,12 @@ In the above example, semantic similarity between the lyrics `dough` and `chicke
 
 ## Examples
 
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/8JY0UdOaHfs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            <div class="caption">Run DMT - *Romantic*</div>
-        </div>
-        <div class="col">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/gxf-4iyurvE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            <div class="caption">Moondog - *High on a Rocky Ledge*</div>
-        </div>
-    </div>
-</div>
-
-- Knxwledge - *itkanbe[sonic]*
-
-[![itkanbesonic](https://res.cloudinary.com/marcomontalbano/image/upload/v1639193112/video_to_markdown/images/youtube--badjh3FQuUA-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/badjh3FQuUA "itkanbesonic")
-
-- Sufjan Stevens - *Death with Dignity*
-
-[![death_with_dignity](https://res.cloudinary.com/marcomontalbano/image/upload/v1639193761/video_to_markdown/images/youtube--30RK_HeV3Is-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://www.youtube.com/watch?v=30RK_HeV3Is "death_with_dignity")
-
-- Sufjan Stevens, James McAlister, Nico Muhly, Bryce Dessner - *Mercury*
-
-[![mercury](https://res.cloudinary.com/marcomontalbano/image/upload/v1639287854/video_to_markdown/images/youtube--3m8v3Rt9-YE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://www.youtube.com/watch?v=3m8v3Rt9-YE "mercury")
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8JY0UdOaHfs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/gxf-4iyurvE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/badjh3FQuUA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/30RK_HeV3Is" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3m8v3Rt9-YE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JZMo-WK-xbs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Making Your Own
 
