@@ -29,19 +29,19 @@ In order to speed up runtime, code can be run on [Google Colab](https://research
 |`-h`|`--help`|||show this help message and exit|
 |`-s`|`--song`|`input/romantic.mp3`||path to input audio file `[REQUIRED]`|
 |`-r`|`--resolution`|`512`|`{128,256,512}`|output video resolution|
-|`-d`|`--duration`|`None`||output video duration|
+|`-d`|`--duration`|`None`|`int`|output video duration|
 |`-ps`|`--pitch_sensitivity`|`220`|`[200-295]`|controls the sensitivity of the class vector to changes in pitch|
 |`-ts`|`--tempo_sensitivity`|`0.25`|`[0.05-0.8]`|controls the sensitivity of the noise vector to changes in volume and tempo|
 |`-c`|`--classes`|`None`||manually specify `[--num_classes]` ImageNet classes|
-|`-n`|`--num_classes`|`12`||number of unique classes to use|
+|`-n`|`--num_classes`|`12`|`[1-1000]`|number of unique classes to use|
 |`-j`|`--jitter`|`0.5`|`[0-1]`|controls jitter of the noise vector to reduce repitition|
 |`-fl`|`--frame_length`|`512`|`i*2^6`|number of audio frames to video frames in the output|
 |`-t`|`--truncation`|`1`|`[0.1-1]`|BigGAN truncation parameter controls complexity of structure within frames|
 |`-sf`|`--smooth_factor`|`20`|`[10-30]`|controls interpolation between class vectors to smooth rapid flucations|
-|`-bs`|`--batch_size`|`20`||BigGAN batch_size|
-|`-o`|`--output_file`|||name of output file stored in output/, defaults to `[--song]` path base_name|
-||`--use_last_vectors`|`False`||set flag to use previous saved class/noise vectors|
-||`--use_last_classes`|`False`||set flag to use previous classes|
+|`-bs`|`--batch_size`|`20`|`int`|BigGAN batch_size|
+|`-o`|`--output_file`|||name of output file stored in `output/`, defaults to `[--song]` path base_name|
+||`--use_last_vectors`|`False`|`bool`|set flag to use previous saved class/noise vectors|
+||`--use_last_classes`|`False`|`bool`|set flag to use previous classes|
 |`-l`|`--lyrics`|`None`||path to lyrics file; setting `[--lyrics LYRICS]` computes classes by semantic similarity under BERT encodings|
 |`-e`|`--encoding`|`sbert`|`{sbert,doc2vec}`|controls choice of sentence embeddings technique|
 |`-es`|`--encoding_strategy`|`None`|`{random,best,ransac}`|controls strategy for choosing classes: `[-e sbert]` can use `best` or `random` while `[-e doc2vec]` can use `ransac`|
