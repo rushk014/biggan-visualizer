@@ -32,7 +32,7 @@ usage: visualize.py [-h] -s SONG [-r {128,256,512}] [-d DURATION]
 |short|long|default|range|help|
 | :--- | :--- | :--- | :--- | :--- |
 |`-h`|`--help`|||show this help message and exit|
-|`-s`|`--song`|`input/romantic.mp3`||path to input audio file `[REQUIRED]`|
+|`-s`|`--song`|||path to input audio file `[REQUIRED]`|
 |`-r`|`--resolution`|`512`|`{128,256,512}`|output video resolution|
 |`-d`|`--duration`|`None`|`int`|output video duration|
 |`-ps`|`--pitch_sensitivity`|`220`|`[200-295]`|controls the sensitivity of the class vector to changes in pitch|
