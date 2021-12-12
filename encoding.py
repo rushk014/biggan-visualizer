@@ -7,12 +7,16 @@ from gensim.utils import tokenize
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from scipy.spatial.distance import cosine
 
+def parse_lyrics(lyrics_path):
+    with open(lyrics_path) as lyrics_file:
+        lines = lyrics_file.readlines()
+        lines = [line.rstrip() for line in lines if not re.match('\[.*\]$', line.rstrip())]
+    return lines
+
 def semantic_classes(lyrics, class_list, num_classes=12, device='cpu', strategy='random'):
     print('Semantic Encoding\n')
     transform = SentenceTransformer('all-MiniLM-L6-v2', device=device)
-    with open(lyrics) as lyrics_file:
-        lines = lyrics_file.readlines()
-        lines = [line.rstrip() for line in lines if not re.match('\[.*\]$', line.rstrip())]
+    lines = parse_lyrics(lyrics)
     if strategy == 'best':
         top_keys = PriorityQueue()
     elif strategy == 'random':
@@ -41,11 +45,12 @@ def semantic_classes(lyrics, class_list, num_classes=12, device='cpu', strategy=
 
 def doc2vec_classes(lyrics, class_list, num_classes=12, strategy='ransac'):
     print('Doc2Vec Encoding\n')
-    tagged_l = [TaggedDocument(d, [i]) for i, d in enumerate(doc_tokenize(lyrics))]
+    lines = parse_lyrics(lyrics)
+    tagged_l = [TaggedDocument(d, [i]) for i, d in enumerate(doc_tokenize(lines))]
     model = Doc2Vec(tagged_l, vector_size=20, window=2, min_count=1, epochs=100)
     lvec = model.infer_vector(' '.join(lyrics).split())
     if strategy == 'ransac':
-        best_classes = ransac(class_list, model, num_classes, iter=10000)
+        best_classes = ransac(class_list, lvec, model, num_classes, iter=10000)
     return best_classes
 
 def ransac(clist, lvec, model, num_classes, iter=5000):
