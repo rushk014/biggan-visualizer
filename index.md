@@ -60,6 +60,10 @@ In the above example, semantic similarity between the lyrics `dough` and `chicke
 
 [![death_with_dignity](https://res.cloudinary.com/marcomontalbano/image/upload/v1639193761/video_to_markdown/images/youtube--30RK_HeV3Is-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://www.youtube.com/watch?v=30RK_HeV3Is "death_with_dignity")
 
+- Sufjan Stevens, James McAlister, Nico Muhly, Bryce Dessner - *Mercury*
+
+[![mercury](https://res.cloudinary.com/marcomontalbano/image/upload/v1639287854/video_to_markdown/images/youtube--3m8v3Rt9-YE-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://www.youtube.com/watch?v=3m8v3Rt9-YE "mercury")
+
 ## Making Your Own
 
 Use the provided [Google Colab notebook](https://colab.research.google.com/github/rushk014/biggan-visualizer/blob/master/biggan_music_visualizer.ipynb) to generate your own Deep Music Videos!
