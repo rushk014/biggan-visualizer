@@ -8,6 +8,7 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from scipy.spatial.distance import cosine
 
 def semantic_classes(lyrics, class_list, num_classes=12, device='cpu', strategy='random'):
+    print('Semantic Encoding\n')
     transform = SentenceTransformer('all-MiniLM-L6-v2', device=device)
     with open(lyrics) as lyrics_file:
         lines = lyrics_file.readlines()
@@ -39,6 +40,7 @@ def semantic_classes(lyrics, class_list, num_classes=12, device='cpu', strategy=
     return keys
 
 def doc2vec_classes(lyrics, class_list, num_classes=12, strategy='ransac'):
+    print('Doc2Vec Encoding\n')
     tagged_l = [TaggedDocument(d, [i]) for i, d in enumerate(doc_tokenize(lyrics))]
     model = Doc2Vec(tagged_l, vector_size=20, window=2, min_count=1, epochs=100)
     lvec = model.infer_vector(' '.join(lyrics).split())
@@ -46,9 +48,9 @@ def doc2vec_classes(lyrics, class_list, num_classes=12, strategy='ransac'):
         best_classes = ransac(class_list, model, num_classes, iter=10000)
     return best_classes
 
-def ransac(clist, lvec, model, num_classes, iter=100):
+def ransac(clist, lvec, model, num_classes, iter=5000):
     best_idx, best_dist = None, float('inf')
-    for _ in range(iter):
+    for _ in tqdm(range(iter)):
         csample_idx = random.sample(list(range(len(clist))), num_classes)
         csample = [clist[i] for i in csample_idx]
         cvec = model.infer_vector(csample)
